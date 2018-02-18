@@ -146,3 +146,20 @@ class Client(PubSub):
 
         data = json.dumps([{'name': name, 'address': addr}])
         self.publish('openmined:add_task', data)
+
+class FederatedClient(base.PubSub):
+    """
+    Data parallel federated learning client.
+
+    Currently assumes the client provides the dataset.
+    """
+    def __init__(self):
+        super().__init__()
+        raise NotImplementedError
+
+    def add_task(self, name, model, data):
+        # Sends model and data to IPFS
+        raise NotImplementedError
+
+    def choose_workers(self):
+        raise NotImplementedError

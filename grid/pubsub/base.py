@@ -148,8 +148,9 @@ class PubSub(object):
         """
         Propose a model as a solution to a task.
 
-        parent  - The name of the task.  e.g. MNIST
+        name  - The name of the task.  e.g. MNIST
         model - A keras model. Down the road we should support more frameworks.
+        parent - A parent model address.
         """
         task = utils.load_task(name)
         p = None

@@ -259,9 +259,54 @@ class FederatedWorker(base.PubSub):
     """
     Data parallel federated learning worker.
     """
-    def __init__(self, sync = True):
-        if not sync:
-            raise NotImplementedError, 'Only synchronous SGD right now.'
+    def __init__(self):
+        # Instantiate things here that I'll need later
+        self.data = None
+        self.share = None
+        self.model = None
+        self.task = None
+        pass
 
-    def work(self):
+    def work(self, **kwargs):
+        # Master method handling all listening and working
+        raise NotImplementedError
+
+    def bid_task(self):
+        # When a new task is added, submit a bid to work on it
+        raise NotImplementedError
+
+    def receive_dataset(self, address_for_data):
+        # Receive message containing IPFS address to dataset
+        raise NotImplementedError
+
+    def receive_broadcast(self, model_and_batch_message):
+        # Receive message containing IPFS address to model,
+        # as well as new batch size (in case other workers dropped out)
+        raise NotImplementedError
+
+    def compute_gradient(self, x, y):
+        # Given a model and my data, compute the gradient
+        batch_size = x.shape[0]
+        weights = self.model.trainable_weights
+        gradients = model.optimizer.get_gradients(model.total_loss, weights) # gradient tensors
+        input_tensors = [model.inputs[0], # input tensor
+                 model.sample_weights[0], # how much to weight each sample by (tensor)
+                 model.targets[0], # labels tensor
+                 K.learning_phase(), # train or test mode (0 is test mode)
+                 ]
+        inputs = [x, # X
+                [1] * batch_size, # sample weights
+                y, # y
+                0 # learning phase in TEST mode
+                ]
+        get_gradients = K.function(inputs=input_tensors, outputs=gradients)
+        return get_gradients(inputs)
+
+    def send_gradient(self, gradient):
+        # Send my gradient to master
+        message = {
+            'task':self.task,
+            'creator':self.id,
+            'gradient': gradient
+        }
         raise NotImplementedError
