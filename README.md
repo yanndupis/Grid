@@ -2,7 +2,7 @@
 
 ## Modes
 
-Grid currently has two modes.
+Grid currently has three modes.
 
 `--tree` -- experimental
 
@@ -38,15 +38,16 @@ apt install python3
 apt install python3-pip3
 ```
 
-# Installing a Worker
+# Installing Grid
 
-Installing a worker can be done easily with:
-
+If you want to use an Anaconda environment, make sure you've created and activated it before installing anything else, e.g.:
 ```
-pip install git+https://github.com/OpenMined/Grid
+conda create -n openmined python=3.6 anaconda -y
+source activate openmined #(or conda activate openmined, depending on your version of conda)
 ```
+Grid requires PyTorch.  Follow the instructions at [https://pytorch.org](https://pytorch.org) to install the correct build for your platform/environment.
 
-Pass the `--upgrade` option to update the worker.
+Finally, navigate to the local clone of the Grid repository and run ```python setup.py install```.  If you're going to be developing Grid, you can replace that with ```python setup.py develop```.
 
 # Launching a Worker
 
@@ -103,3 +104,37 @@ ipfs swarm connect <ipfs_address>
 ```
 
 The swarm connect IPFS address should look something like this `/p2p-circuit/ipfs/QmXbV8HZwKYkkWAAZr1aYT3nRMCUnpp68KaxP3vccirUc8`. And can be found in the output of the daemon when you start it.
+
+## Contributing
+
+TODO make this automatic
+
+Before submitting a PR to this repo make sure the following packages are installed with pip:
+
+```
+pip install pycodestyle yapf pytest
+```
+
+First run `yapf`:
+
+```
+yapf --recursive --in-place .
+```
+
+Then run `pycodestyle`:
+
+```
+pycodestyle --max-line-length=130 --exclude=.ropeproject,ipfsapi,build,.eggs .
+```
+
+We still have some issues with long lines and bare excepts so those can be ignored for now. But everything else should be cleaned up.
+
+To run the integration tests you MUST start up a local worker first (this is unfortunate see issue https://github.com/OpenMined/Grid/issues/146)
+
+Then run the tests:
+
+```
+pytest -s
+```
+
+If everything looks good to you, submit the PR.
